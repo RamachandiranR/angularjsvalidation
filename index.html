@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<title>EDGE Allow only Regex</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+  </head>
+  <body>
+    <header>
+		<h1>EDGE Allow only Regex</h1>
+	</header>
+	<section class="container mt-5" ng-app="onlyRegex">
+		<article class="row">
+			<article class="col-sm-6 col-xs-12">
+				<div class="form-group row">
+					<label for="lastName" class="col-sm-4 col-form-label">Only Alpha</label>
+					<div class="col-sm-8">
+						<input class="form-control" ng-model="onlyAlpha" placeholder="AAaa" replace data-allow="onlyalpha">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="lastName" class="col-sm-4 col-form-label">Only Numeric</label>
+					<div class="col-sm-8">
+						<input class="form-control" ng-model="onlyNumeric" placeholder="123" replace data-allow="onlynumeric">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="lastName" class="col-sm-4 col-form-label">Only LowerCase</label>
+					<div class="col-sm-8">
+						<input class="form-control" ng-model="onlyLower" placeholder="aa" replace data-allow="lowercase">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="lastName" class="col-sm-4 col-form-label">Only UpperCase</label>
+					<div class="col-sm-8">
+						<input class="form-control" ng-model="onlyUpper" placeholder="AA" replace data-allow="uppercase">
+					</div>
+				</div>
+			</article>
+		</article>
+	</section>
+    <!-- JavaScript -->
+	<script src="js/angular.min.js"></script>
+    <script>
+		var app = angular.module("onlyRegex", []);
+		app.directive('replace', function() {
+		  return {
+			require: 'ngModel',
+			link: function(scope, element, attrs, model) {
+			  model.$parsers.push(function(val) {
+				if (!val) { return; }
+				var allow = (attrs.allow == 'uppercase') ? '[^A-Z]' : (attrs.allow == 'lowercase') ? '[^a-z]' : (attrs.allow == 'onlynumeric') ? '[^0-9]' : (attrs.allow == 'onlyalpha') ? '[^A-Za-z]' : '';
+				var regex = new RegExp(allow);
+				var replaced = val.replace(regex, ""); 
+				if (replaced !== val) {
+				  model.$setViewValue(replaced);
+				  model.$render();
+				}         
+				return replaced;         
+			  });
+			}
+		  };
+		});
+	</script>
+  </body>
+</html>
